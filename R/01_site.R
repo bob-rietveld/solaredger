@@ -42,12 +42,11 @@ get_site_overview <- function(site_id, tidy = TRUE ){
   if(tidy){
 
    result <-  result$overview |>
+              purrr::list_flatten(name_spec = "{outer}_{inner}") |>
               tibble::as_tibble() |>
-              tidyr::unnest(cols = c(lifeTimeData,
-                              lastYearData,
-                              lastMonthData,
-                              lastDayData,
-                              currentPower))
+              dplyr::mutate( site_id = site_id ) |>
+              janitor::clean_names() |>
+              dplyr::mutate_if(is.numeric, as.double)
 
   }
 
